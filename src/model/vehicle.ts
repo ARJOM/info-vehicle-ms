@@ -1,20 +1,9 @@
-import VehicleInterface from "interfaces/vehicleInterface";
-import {
-  Table,
-  Column,
-  Model,
-  AllowNull,
-  PrimaryKey,
-} from "sequelize-typescript";
+import VehicleInterface from "./../interfaces/vehicleInterface";
+import { Table, Column, Model, AllowNull } from "sequelize-typescript";
 import { DataType } from "sequelize-typescript";
 
 @Table
 class Vehicle extends Model implements VehicleInterface {
-  @AllowNull(false)
-  @PrimaryKey
-  @Column(DataType.NUMBER)
-  id: number;
-
   @AllowNull(false)
   @Column(DataType.TEXT)
   placa: string;

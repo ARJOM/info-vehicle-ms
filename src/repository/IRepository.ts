@@ -3,5 +3,5 @@ export interface IRepository<M> {
   save(model: M): Promise<M>;
   findById(id: number): Promise<M>;
   getAll(): Promise<M[]>;
-  deleteById(id: string): Promise<number>;
+  deleteById(id: number): Promise<number>;
 }

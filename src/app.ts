@@ -1,5 +1,6 @@
 import express, { Express, json, Request, Response } from "express";
 import { Sequelize } from "sequelize-typescript";
+import Routes from "./routes/index";
 
 interface AppConfig {
   PORT?: number;
@@ -27,7 +28,7 @@ class App {
     this.db = new Sequelize({
       dialect: "sqlite",
       storage: "./database.sqlite",
-      sync: { alter: true },
+      // sync: { alter: true },
       define: { paranoid: true },
       models: [__dirname + "/model"],
     });
@@ -46,6 +47,8 @@ class App {
         version: "1.0.0",
       });
     });
+
+    this.main.use("/api/v1", Routes);
   }
 
   private config(): void {

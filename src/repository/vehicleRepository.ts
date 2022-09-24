@@ -1,31 +1,33 @@
 import { IRepository } from "./IRepository";
-import VehicleInterface from "interfaces/vehicleInterface";
-import Vehicle from "model/vehicle";
+import VehicleInterface from "./../interfaces/vehicleInterface";
+import Vehicle from "./../model/vehicle";
 
-export class VehicleRepository implements IRepository<VehicleInterface> {
+export default class VehicleRepository
+  implements IRepository<VehicleInterface>
+{
   public async exists(model: VehicleInterface): Promise<boolean> {
-    const result = await this.findById(model.id);
-    return !!result;
+    let result = false;
+
+    if (!!model.id) {
+      result = !!(await this.findById(model.id));
+    }
+    return result;
   }
 
   public async save(model: VehicleInterface): Promise<VehicleInterface> {
-    const alreadyExists = this.exists(model);
+    const alreadyExists = await this.exists(model);
+    let sequelizeVehicle: Vehicle;
 
     if (alreadyExists) {
-      const sequelizeVehicle = await Vehicle.findOne({
+      sequelizeVehicle = await Vehicle.findOne({
         where: { id: model.id },
       });
-      try {
-        sequelizeVehicle.update(model.id, model);
-      } catch (error) {
-        throw error;
-      }
+      await sequelizeVehicle.set(model);
     } else {
-      const newVehicle = new Vehicle(model);
-      newVehicle.save();
+      sequelizeVehicle = new Vehicle(model);
     }
 
-    return model;
+    return await sequelizeVehicle.save();
   }
 
   public async findById(id: number): Promise<VehicleInterface> {
@@ -38,7 +40,7 @@ export class VehicleRepository implements IRepository<VehicleInterface> {
     return result;
   }
 
-  public async deleteById(id: string): Promise<number> {
-    return Vehicle.destroy({ where: { id: id } });
+  public async deleteById(id: number): Promise<number> {
+    return await Vehicle.destroy({ where: { id: id } });
   }
 }
