@@ -14,7 +14,7 @@ export default class VehicleRepository
     return result;
   }
 
-  public async save(model: VehicleInterface): Promise<VehicleInterface> {
+  public async save(model: VehicleInterface): Promise<Vehicle> {
     const alreadyExists = await this.exists(model);
     let sequelizeVehicle: Vehicle;
 
@@ -30,12 +30,12 @@ export default class VehicleRepository
     return await sequelizeVehicle.save();
   }
 
-  public async findById(id: number): Promise<VehicleInterface> {
+  public async findById(id: number): Promise<Vehicle> {
     const result = await Vehicle.findByPk(id);
     return result;
   }
 
-  public async getAll(): Promise<VehicleInterface[]> {
+  public async getAll(): Promise<Vehicle[]> {
     const result = await Vehicle.findAll();
     return result;
   }

@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { VehicleMapper } from "../mappers/vehicleMapper";
 import VehicleService from "./../services/vehicleService";
 
 export default class VehicloController {
@@ -8,7 +9,7 @@ export default class VehicloController {
     const vehicle = req.body;
     try {
       const response = await this.service.save(vehicle);
-      res.send(response);
+      res.send(VehicleMapper.toDTO(response));
     } catch (error) {
       res.status(400).send({ message: error.message });
     }
@@ -17,7 +18,7 @@ export default class VehicloController {
   async list(req: Request, res: Response) {
     try {
       const response = await this.service.list();
-      res.send(response);
+      res.send(response.map((vehicle) => VehicleMapper.toDTO(vehicle)));
     } catch (error) {
       res.status(400).send({ message: error.message });
     }
@@ -27,7 +28,7 @@ export default class VehicloController {
     const id = Number(req.params.id);
     try {
       const response = await this.service.getById(id);
-      res.send(response);
+      res.send(VehicleMapper.toDTO(response));
     } catch (error) {
       res.status(400).send({ message: error.message });
     }
@@ -36,10 +37,9 @@ export default class VehicloController {
   async update(req: Request, res: Response) {
     const vehicle = req.body;
     const id = Number(req.params.id);
-    vehicle["id"] = id;
     try {
-      const response = await this.service.save(vehicle);
-      res.send(response);
+      const response = await this.service.update(id, vehicle);
+      res.send(VehicleMapper.toDTO(response));
     } catch (error) {
       res.status(400).send({ message: error.message });
     }
@@ -49,7 +49,7 @@ export default class VehicloController {
     const id = Number(req.params.id);
     try {
       const response = await this.service.delete(id);
-      res.send(response);
+      res.send({ linhasAfetadas: response });
     } catch (error) {
       res.status(400).send({ message: error.message });
     }
